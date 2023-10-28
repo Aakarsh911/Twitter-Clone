@@ -1,23 +1,29 @@
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import Tweet from "./Tweet";
+import axios from "axios";
 
 function App() {
+
+  const [data, setData] = useState([]);
+
+  const fetchTweets = async () => {
+    try {
+      const response = await axios.get('https://coursera-twitter-api.herokuapp.com/tweets');
+      setData(response.data);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchTweets().then(r => console.log(r));
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+        {data.map(tweet => <Tweet key={tweet.id} {...tweet} />)}
     </div>
   );
 }
